@@ -8,4 +8,4 @@ This is a repo to take notes about how to work with ML in sklearn
 #Input
 X = df[['TotalSF']] #pandasDataFrame
 y= df[['SalesPrice']] #pandasSeries
-z = df[[]]
+
