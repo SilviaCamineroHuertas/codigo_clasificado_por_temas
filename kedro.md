@@ -32,7 +32,7 @@ To check that Kedro is installed:
 ````python
 kedro info
 ````
-
+You should see an ASCII art graphic and the Kedro version number: 
 
 <img width="294" alt="kedro_info" src="https://user-images.githubusercontent.com/117999669/224502516-157fd0ea-d7bf-4888-9f6f-55fa1e5b1616.PNG">
 
@@ -42,9 +42,4 @@ kedro info
 
 
 
-## 1) INSTALL KEDRO 
 
-`````python
-#Input
-X = df[['TotalSF']] #pandasDataFrame
-y= df[['SalesPrice']] #pandasSeries
