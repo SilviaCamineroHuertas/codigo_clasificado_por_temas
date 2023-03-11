@@ -63,9 +63,32 @@ When you build a Kedro project, you will typically follow a standard development
   -Build the project documentation
 
   -Package the project for distribution
+  
+## WORK WITH KEDRO IN A PROJECT
 
+After kedro installation and environment creation (and activation with **conda activate spaceflights2),** we need to create a project in kedro. 
 
+1) For that purpose, in the terminal window, we need to navigate to the folder you want to store the project and type the following to create an empty project:
+ ````python
+kedro new
+````
+2) Kedro projects have a **requirements.txt** file to specify their dependencies and enable sharable projects by ensuring consistency across Python packages and versions.
 
+The generic project template bundles some typical dependencies in **src/requirements.txt.** Other typical dependencies to install, just to show an example, could be the following ones:
+
+````python
+kedro==0.18.6
+kedro-datasets[pandas.CSVDataSet, pandas.ExcelDataSet, pandas.ParquetDataSet]~=1.0.2  # Specify Kedro-Datasets dependencies
+kedro-viz~=5.0                                                                 # Visualise your pipelines
+scikit-learn~=1.0                                                              # For modelling in the data science pipeline
+````
+
+In that case, you should add the previous lines to **src/requirements.txt file.**
+
+3) After step 2), we need to install the new dependencies introduced in the requirements.txt file:
+ ````python
+pip install -r src/requirements.txt
+````
 
 
 
