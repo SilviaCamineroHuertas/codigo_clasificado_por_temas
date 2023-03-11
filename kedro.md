@@ -102,4 +102,19 @@ pip install -r src/requirements.txt
 
  - Versioning
 
+In this example, the registration needed in calatog.yml is:
+
+companies:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/companies.csv
+
+reviews:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/reviews.csv
+  
+ shuttles:
+  type: pandas.ExcelDataSet
+  filepath: data/01_raw/shuttles.xlsx
+  load_args:
+    engine: openpyxl # Use modern Excel engine (the default since Kedro 0.18.0)
 
