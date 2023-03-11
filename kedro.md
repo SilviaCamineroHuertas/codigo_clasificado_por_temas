@@ -89,6 +89,17 @@ In that case, you should add the previous lines to **src/requirements.txt file.*
  ````python
 pip install -r src/requirements.txt
 ````
+## SET UP THE DATA
+1) Data need to be saved in **data/01_raw** path for the project. In this case, since we are followed spaceflights tutorial for the kedro official website, the data files are companies.csv, reviews.csv y shuttles.xlsx.
 
+2) All Kedro projects have a conf/base/catalog.yml file, and you register each dataset by adding a named entry into the .yml file that includes the following:
+
+ - File location (path)
+
+ - Parameters for the given dataset
+
+ - Type of data
+
+ - Versioning
 
 
