@@ -36,7 +36,33 @@ You should see an ASCII art graphic and the Kedro version number:
 
 <img width="294" alt="kedro_info" src="https://user-images.githubusercontent.com/117999669/224502516-157fd0ea-d7bf-4888-9f6f-55fa1e5b1616.PNG">
 
+## STANDARD DEVELOPMENT WORKFLOW
 
+When you build a Kedro project, you will typically follow a standard development workflow:
+
+1) Set up the project template
+
+  -Create a new project and install project dependencies (dependencies are libraries).
+
+  -Configure credentials and any other sensitive/personal content, and logging
+
+2) Set up the data
+
+  -Add data to the data folder
+
+  -Reference all datasets for the project
+
+3) Create the pipeline
+
+  -Construct nodes to make up the pipeline
+
+  -Choose how to run the pipeline: sequentially or in parallel
+
+4) Package the project
+
+  -Build the project documentation
+
+  -Package the project for distribution
 
 
 
