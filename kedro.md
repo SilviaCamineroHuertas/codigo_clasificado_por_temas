@@ -143,3 +143,141 @@ data.head(10)
 ````
 
 ## CREATE A DATA PROCESSING PIPELINE
+
+1) In the terminal, run the following command to generate a new pipeline for data processing:
+````python
+kedro pipeline create data_processing
+````
+This command generates all the files you need for the pipeline:
+
+ - Two python files within src/kedro_tutorial/pipelines/data_processing:
+
+    - **nodes.py** (for the node functions that form the data processing)
+
+    - **pipeline.py** (to build the pipeline)
+
+ - A yaml file: **conf/base/parameters/data_processing.yml** to define the parameters used when running the pipeline
+
+ - A folder for test code: **src/tests/pipelines/data_processing**
+
+ - **__init__.py** files in the required folders to ensure that Python can import the pipeline
+
+
+2) In order to learn how to add node functions, open **src/kedro_tutorial/pipelines/data_processing/nodes.py** and add the code below, which provides two functions (preprocess_companies and preprocess_shuttles) that each takes a raw DataFrame as input, convert the data in several columns to different types, and output a DataFrame containing the preprocessed data:
+
+````python
+import pandas as pd
+
+
+def _is_true(x: pd.Series) -> pd.Series:
+    return x == "t"
+
+
+def _parse_percentage(x: pd.Series) -> pd.Series:
+    x = x.str.replace("%", "")
+    x = x.astype(float) / 100
+    return x
+
+
+def _parse_money(x: pd.Series) -> pd.Series:
+    x = x.str.replace("$", "").str.replace(",", "")
+    x = x.astype(float)
+    return x
+
+
+def preprocess_companies(companies: pd.DataFrame) -> pd.DataFrame:
+    """Preprocesses the data for companies.
+
+    Args:
+        companies: Raw data.
+    Returns:
+        Preprocessed data, with `company_rating` converted to a float and
+        `iata_approved` converted to boolean.
+    """
+    companies["iata_approved"] = _is_true(companies["iata_approved"])
+    companies["company_rating"] = _parse_percentage(companies["company_rating"])
+    return companies
+
+
+def preprocess_shuttles(shuttles: pd.DataFrame) -> pd.DataFrame:
+    """Preprocesses the data for shuttles.
+
+    Args:
+        shuttles: Raw data.
+    Returns:
+        Preprocessed data, with `price` converted to a float and `d_check_complete`,
+        `moon_clearance_complete` converted to boolean.
+    """
+    shuttles["d_check_complete"] = _is_true(shuttles["d_check_complete"])
+    shuttles["moon_clearance_complete"] = _is_true(shuttles["moon_clearance_complete"])
+    shuttles["price"] = _parse_money(shuttles["price"])
+    return shuttles
+````
+    
+3) The next steps are to create a node for each function and to create a modular pipeline for data processing:
+
+ First, add import statements for your functions by adding them to the beginning of **pipeline.py:**
+ ````python
+ from kedro.pipeline import Pipeline, node, pipeline
+
+from .nodes import preprocess_companies, preprocess_shuttles
+````
+
+4) Next, add the following to **src/kedro_tutorial/pipelines/data_processing/pipeline.py**, so the create_pipeline() function is as follows:
+ ````python
+ def create_pipeline(**kwargs) -> Pipeline:
+    return pipeline(
+        [
+            node(
+                func=preprocess_companies,
+                inputs="companies",
+                outputs="preprocessed_companies",
+                name="preprocess_companies_node",
+            ),
+            node(
+                func=preprocess_shuttles,
+                inputs="shuttles",
+                outputs="preprocessed_shuttles",
+                name="preprocess_shuttles_node",
+            ),
+        ]
+    )
+   ````
+   
+Note that the inputs statements for **companies** and **shuttles** refer to the datasets defined in **conf/base/catalog.yml.** They are inputs to the **preprocess_companies** and **preprocess_shuttles functions.** Kedro uses the named node inputs (and outputs) to determine interdependencies between the nodes, and their execution order.
+
+5) Run the following command in your terminal window to test the node named **preprocess_companies_node:**
+````python
+kedro run --nodes=preprocess_companies_node
+#output
+[08/09/22 16:43:10] INFO     Kedro project spaceflights2                                         session.py:346
+[08/09/22 16:43:11] INFO     Loading data from 'companies' (CSVDataSet)...                   data_catalog.py:343
+                    INFO     Running node: preprocess_companies_node:                                node.py:327
+                             preprocess_companies([companies]) -> [preprocessed_companies]
+                    INFO     Saving data to 'preprocessed_companies' (MemoryDataSet)...      data_catalog.py:382
+                    INFO     Completed 1 out of 1 tasks                                  sequential_runner.py:85
+                    INFO     Pipeline execution completed successfully.                             runner.py:89
+                    INFO     Loading data from 'preprocessed_companies' (MemoryDataSet)...   data_catalog.py:343
+ ````
+ 
+ 6) To test both nodes together as the complete data processing pipeline, you can write in your terminal:
+````python
+kedro run
+````
+
+7) Each of the nodes outputs a new dataset (**preprocessed_companies** and **preprocessed_shuttles).**
+
+When Kedro runs the pipeline, it determines that neither dataset is registered in the data catalog, so it stores these as temporary datasets in memory as Python objects using the MemoryDataSet class. Once all nodes that depend on an temporary dataset have executed, the dataset is cleared and the Python garbage collector releases the memory.
+
+If you prefer to save the preprocessed data to file, add the following to the end of **conf/base/catalog.yml:**
+````python
+preprocessed_companies:
+  type: pandas.ParquetDataSet
+  filepath: data/02_intermediate/preprocessed_companies.pq
+
+preprocessed_shuttles:
+  type: pandas.ParquetDataSet
+  filepath: data/02_intermediate/preprocessed_shuttles.pq
+````
+ 
+ 
