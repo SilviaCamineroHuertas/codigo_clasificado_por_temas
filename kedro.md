@@ -273,11 +273,11 @@ If you prefer to save the preprocessed data to file, add the following to the en
 ````python
 preprocessed_companies:
   type: pandas.ParquetDataSet
-  filepath: data/02_intermediate/preprocessed_companies.pq
+  filepath: data/02_intermediate/preprocessed_companies.parquet
 
 preprocessed_shuttles:
   type: pandas.ParquetDataSet
-  filepath: data/02_intermediate/preprocessed_shuttles.pq
+  filepath: data/02_intermediate/preprocessed_shuttles.parquet
 ````
  
  
