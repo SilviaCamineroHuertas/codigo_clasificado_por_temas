@@ -123,9 +123,23 @@ In order to test that kedro can load the csv data, we can run in the terminal fr
 ````python
 kedro ipython
 ````
-In my case, I prefer to run **kedro jupyter notebook** to see the information in notebooks (for beginners is easier than work directly in kedro). If you choose this option, you have to open in jupyter a new notebook with the option kedro(name_of_the_project (in my case spaceflights2)):
+In my case, I prefer to run **kedro jupyter notebook** to see the information in notebooks (for beginners is easier than work directly in kedro): 
+ 1) If you choose this option, you have to open in jupyter a new notebook with the option kedro(name_of_the_project (in my case spaceflights2)):
+
+<img width="640" alt="kedro_jupyter" src="https://user-images.githubusercontent.com/117999669/224537357-b53057f3-8c37-4a20-9a98-5fd998c3a4f6.PNG">
+
+2)  With the command **catalog.list()**  in jupyter notebook you can see all data sets you have already uploaded in the kedro path **data/01_raw/.**
+````python
+catalog.list()
+#output
+['companies', 'reviews', 'shuttles', 'parameters']
+````
 
 
+3) The most important advantage related to work with catalogs is that you dont need to work with csv/excels/datatype commands. You can load the data directly with catalog just with the name of the dataset as relevant information:
+````python
+data = catalog.load("companies")
+data.head(10)
+````
 
-
-
+## CREATE A DATA PROCESSING PIPELINE
