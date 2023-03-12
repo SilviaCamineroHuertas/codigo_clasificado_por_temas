@@ -117,4 +117,15 @@ reviews:
   filepath: data/01_raw/shuttles.xlsx
   load_args:
     engine: openpyxl # Use modern Excel engine (the default since Kedro 0.18.0)
+    
+    
+In order to test that kedro can load the csv data, we can run in the terminal from the project root directory:
+````python
+kedro ipython
+````
+In my case, I prefer to run **kedro jupyter notebook** to see the information in notebooks (for beginners is easier than work directly in kedro). If you choose this option, you have to open in jupyter a new notebook with the option kedro(name_of_the_project (in my case spaceflights2)):
+
+
+
+
 
