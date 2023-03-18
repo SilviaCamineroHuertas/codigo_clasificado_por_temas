@@ -260,7 +260,7 @@ kedro run --nodes=preprocess_companies_node
                     INFO     Loading data from 'preprocessed_companies' (MemoryDataSet)...   data_catalog.py:343
  ````
  
- 6) To test both nodes together as the complete data processing pipeline, you can write in your terminal:
+6) To test both nodes together as the complete data processing pipeline, you can write in your terminal:
 ````python
 kedro run
 ````
@@ -279,5 +279,45 @@ preprocessed_shuttles:
   type: pandas.ParquetDataSet
   filepath: data/02_intermediate/preprocessed_shuttles.parquet
 ````
- 
- 
+8) Now, we are going to add another node for a function that joins together the three datasets into a single model input table. You’ll add some code for a function and node called **create_model_input_table**, which Kedro processes as follows:
+
+  - Kedro uses the **preprocessed_shuttles, preprocessed_companies** and **reviews datasets** as **INPUTS**.
+  - Kedro saves the **OUTPUT** as a dataset called **model_input_table**.
+
+9) But first we need to add the **create_model_input_table() function** to **src/kedro_tutorial/pipelines/data_processing/nodes.py**:
+````python
+def create_model_input_table(
+    shuttles: pd.DataFrame, companies: pd.DataFrame, reviews: pd.DataFrame
+) -> pd.DataFrame:
+    """Combines all data to create a model input table.
+
+    Args:
+        shuttles: Preprocessed data for shuttles.
+        companies: Preprocessed data for companies.
+        reviews: Raw data for reviews.
+    Returns:
+        model input table.
+
+    """
+    rated_shuttles = shuttles.merge(reviews, left_on="id", right_on="shuttle_id")
+    model_input_table = rated_shuttles.merge(
+        companies, left_on="company_id", right_on="id"
+    )
+    model_input_table = model_input_table.dropna()
+    return model_input_table
+````
+
+10) Also we need to add an import statement for **create_model_input_table** at the top of **src/kedro_tutorial/pipelines/data_processing/pipeline.py:**
+````python
+from .nodes import create_model_input_table, preprocess_companies, preprocess_shuttles
+```
+
+11) Add the code below to include the new node in the pipeline:
+````python
+node(
+    func=create_model_input_table,
+    inputs=["preprocessed_shuttles", "preprocessed_companies", "reviews"],
+    outputs="model_input_table",
+    name="create_model_input_table_node",
+),
+```
