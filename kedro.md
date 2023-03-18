@@ -310,7 +310,7 @@ def create_model_input_table(
 10) Also we need to add an import statement for **create_model_input_table** at the top of **src/kedro_tutorial/pipelines/data_processing/pipeline.py:**
 ````python
 from .nodes import create_model_input_table, preprocess_companies, preprocess_shuttles
-```
+````
 
 11) Add the code below to include the new node in the pipeline:
 ````python
@@ -320,4 +320,4 @@ node(
     outputs="model_input_table",
     name="create_model_input_table_node",
 ),
-```
+````
