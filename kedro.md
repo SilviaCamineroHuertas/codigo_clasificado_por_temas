@@ -321,3 +321,104 @@ node(
     name="create_model_input_table_node",
 ),
 ````
+## GENERATE A NEW PIPELINE TEMPLATE
+
+1) Run the following command to create the **data_science pipeline:** (dont forget activate first the appropiate environment created previously to work with kedro: command **conda activate spaceflights2).**
+
+````python
+kedro pipeline create data_science
+````
+
+2) Add the following code to the **src/kedro_tutorial/pipelines/data_science/nodes.py** file:
+````python
+import logging
+from typing import Dict, Tuple
+
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
+
+
+def split_data(data: pd.DataFrame, parameters: Dict) -> Tuple:
+    """Splits data into features and targets training and test sets.
+
+    Args:
+        data: Data containing features and target.
+        parameters: Parameters defined in parameters/data_science.yml.
+    Returns:
+        Split data.
+    """
+    X = data[parameters["features"]]
+    y = data["price"]
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=parameters["test_size"], random_state=parameters["random_state"]
+    )
+    return X_train, X_test, y_train, y_test
+
+
+def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> LinearRegression:
+    """Trains the linear regression model.
+
+    Args:
+        X_train: Training data of independent features.
+        y_train: Training data for price.
+
+    Returns:
+        Trained model.
+    """
+    regressor = LinearRegression()
+    regressor.fit(X_train, y_train)
+    return regressor
+
+
+def evaluate_model(
+    regressor: LinearRegression, X_test: pd.DataFrame, y_test: pd.Series
+):
+    """Calculates and logs the coefficient of determination.
+
+    Args:
+        regressor: Trained model.
+        X_test: Testing data of independent features.
+        y_test: Testing data for price.
+    """
+    y_pred = regressor.predict(X_test)
+    score = r2_score(y_test, y_pred)
+    logger = logging.getLogger(__name__)
+    logger.info("Model has a coefficient R^2 of %.3f on test data.", score)
+````
+
+3) You now need to add some parameters that are used by the DataCatalog when the pipeline executes. Add the following to **conf/base/parameters/data_science.yml:**
+````python
+model_options:
+  test_size: 0.2
+  random_state: 3
+  features:
+    - engines
+    - passenger_capacity
+    - crew
+    - d_check_complete
+    - moon_clearance_complete
+    - iata_approved
+    - company_rating
+    - review_scores_rating
+````
+
+Here, the parameters **test_size** and **random_state** are used as part of the **train-test split**, and features gives the names of columns in the model input table to use as features.
+
+------------------------------------------------------------------------------------------------------------
+**GOOD PRACTICE**: if you run **black src/**, the output is a rewritten code, since **black PEP 8**  is a way to follow PEP 8 standards to create codes.
+Output example:
+````python
+black src/*       
+#output:
+error: cannot format src\requirements.txt: Cannot parse: 1:5: black~=22.0
+reformatted src\setup.py
+reformatted src\spaceflights2\pipelines\data_processing\pipeline.py
+reformatted src\spaceflights2\pipelines\data_science\nodes.py
+reformatted src\spaceflights2\pipelines\data_processing\nodes.py
+
+Oh no! 💥 💔 💥
+4 files reformatted, 15 files left unchanged, 1 file failed to reformat.
+````
+---------------------------------------------------------------------------------------------------------------------------
