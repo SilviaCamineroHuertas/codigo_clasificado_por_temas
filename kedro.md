@@ -156,7 +156,7 @@ This command generates all the files you need for the pipeline:
 
     - **pipeline.py** (to build the pipeline)
 
- - A yaml file: **conf/base/parameters/data_processing.yml** to define the parameters used when running the pipeline
+ - A yaml file: **conf/base/parameters/data_processing.yml** to define the parameters used when running the pipelineS
 
  - A folder for test code: **src/tests/pipelines/data_processing**
 
