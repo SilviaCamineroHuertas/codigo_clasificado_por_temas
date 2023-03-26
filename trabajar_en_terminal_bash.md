@@ -13,3 +13,17 @@ paths diferentes separados por dos puntos. Están las carpetas ordenadas por pri
 export $VARIABLE="contenido" manera de crear variables de entorno
 echo $VARIABLE #modo de chequear el contenido de la variable de entorno
 echo $(función): se sabe que es una función y no una variable de entorno por los paréntesis
+conda activate environment: también funciona en bash terminal para activar entornos
+mv: comando move. Mueve un fichero de un path a otro, y se utiliza también comúnmente para hacer rename de los ficheros.
+ll: listado más fácil de entender que ls.
+touch name_file: creación de un fichero en la ruta en la que estemos. 
+touch .name-file: creación de un fichero oculto.
+ls -a: visualizar ficheros ocultos.
+rm ./namefile: eliminamos en la ruta en la que estemos el file con el nombre especificado.
+mkdir: sirve para crear directorios
+mkdir -p one/two/three: -p lo que hace posible es que, si no existe la carpeta TWO (ya que son carpetas encadenadas el resultado), la crea
+cp ./file1 file2: créame una copia del fichero file 1 llamada file 2(en la carpeta donde me encuentro)
+mv file1 file2: en la carpeta donde estoy, sobreescribe en file2 el contenido de file1, y file1 ya no existe. Se puede verificar este resultado con ls.
+mv funciona con carpetas; cp sin embargo no. Para ello, hay que escribir cp -r(r significa recursivo, que copie todo)
+rm -rf: CUIDADO CON ESTE MODIFICADOR DE RM. Implica remove recursivo y forced (sin preguntar confirmación)
+cd: cd sin nada nos lleva a home
