@@ -85,7 +85,7 @@ scikit-learn~=1.0                                                              #
 
 In that case, you should add the previous lines to **src/requirements.txt file.**
 
-3) After step 2), we need to install the new dependencies introduced in the requirements.txt file:
+3) After step 2), we need to install the new dependencies introduced in the requirements.txt file, in the folder you create with kedro new:
  ````python
 pip install -r src/requirements.txt
 ````
